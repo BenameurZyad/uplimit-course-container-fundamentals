@@ -1,11 +1,22 @@
-FROM ubuntu:22.04
-LABEL org.opencontainers.image.authors="jamieduncan@google.com"
-LABEL org.opencontainers.image.source=https://github.com/jduncan-rva/container-fundamentals
-LABEL org.opencontainers.image.description="Containter Fundamentals - Static Website Image"
+# https://hub.docker.com/_/alpine
+FROM alpine:latest
+LABEL org.opencontainers.image.authors="z.b@test.com"
+LABEL org.opencontainers.image.description="Week 1 Project - edge_server_v1"
+LABEL org.opencontainers.image.source=https://hub.docker.com/_/alpine
 LABEL org.opencontainers.image.licenses=APACHE2
-RUN apt update
-RUN apt install nginx -y
-COPY config/nginx.conf /etc/nginx/
-COPY web_content/ /var/www
+LABEL server_type="edge_server"
+
+# Updating the package repository and installs Nginx
+RUN apk update
+
+# The --no-cache flag prevents apk from caching the index locally, 
+# saving space in the resulting image. 
+# After testing : no difference with or without flag.
+RUN apk add nginx
+
+COPY config/nginx.conf /etc/nginx/nginx.conf
+COPY web_content /var/www
+
 EXPOSE 80
+
 CMD ["nginx", "-g", "daemon off;"]
